@@ -1,0 +1,2 @@
+-- Mac模拟器的缩放
+MAC_SIMULATOR_SCALE = 0.75

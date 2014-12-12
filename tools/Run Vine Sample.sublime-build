@@ -1,0 +1,4 @@
+{
+	"cmd": ["sh", "${project_path:${folder}}/tools/run_in_sublime.sh", "${project_path:${folder}}"],
+    "working_dir": "${project_path:${folder}}"
+}
