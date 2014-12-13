@@ -31,17 +31,17 @@ local function main()
     local director = cc.Director:getInstance()
     local glview = director:getOpenGLView()
     if nil == glview then
-        glview = cc.GLViewImpl:createWithRect("HelloLua", cc.rect(0,0,768*MAC_SIMULATOR_SCALE,1024*MAC_SIMULATOR_SCALE))
+        glview = cc.GLViewImpl:createWithRect("HelloLua", cc.rect(0,0,MAC_SIMULATOR_WINDOW_WIDTH*MAC_SIMULATOR_WINDOW_SCALE,MAC_SIMULATOE_WINDOW_HEIGHT*MAC_SIMULATOR_WINDOW_SCALE))
         director:setOpenGLView(glview)
     end
 
-    glview:setDesignResolutionSize(640, 960, cc.ResolutionPolicy.FIXED_WIDTH)
+    glview:setDesignResolutionSize(MAC_SIMULATOR_RESOLUTION_WIDTH, MAC_SIMULATOR_RESOLUTION_HEIGHT, cc.ResolutionPolicy.FIXED_WIDTH)
 
     --turn on display FPS
     director:setDisplayStats(true)
 
     --set FPS. the default value is 1.0/60 if you don't call this
-    director:setAnimationInterval(1.0 / 60)
+    director:setAnimationInterval(1.0 / GAME_FPS)
 
     local schedulerID = 0
     --support debug
