@@ -18,6 +18,17 @@ function VinePart:getPartSize()
     return cc.size(0, 0)
 end
 
+function VinePart:getEndPosition()
+	local ppx, ppy = self:getPosition()
+    local prx = (self.outPointOfTangency.x - self.inPointOfTangency.x) * self:getPartSize().width * self:getScaleX()
+    local pry = (self.outPointOfTangency.y - self.inPointOfTangency.y) * self:getPartSize().height * self:getScaleY()
+    local radius = math.sqrt(prx*prx + pry*pry)
+    prx = radius * math.cos(-self:getRotation() / 180 * math.pi)
+    pry = radius * math.sin(-self:getRotation() / 180 * math.pi)
+
+    return cc.p(ppx+prx, ppy+pry)
+end
+
 function VinePart:initParam(param)
 	self.manager    = param.manager  -- 管理者，vine对象或layer
 	self.parentPart = param.parent   -- 父节点，通常用于坐标修正
@@ -52,13 +63,7 @@ function VinePart:update(dTime)
 
     -- 修正坐标
     if self.parentPart then
-    	local ppx, ppy = self.parentPart:getPosition()
-    	local prx = (self.outPointOfTangency.x - self.inPointOfTangency.x) * self.parentPart:getPartSize().width * self.parentPart:getScaleX()
-    	local pry = (self.outPointOfTangency.y - self.inPointOfTangency.y) * self.parentPart:getPartSize().height * self.parentPart:getScaleY()
-    	local radius = math.sqrt(prx*prx + pry*pry)
-    	prx = radius * math.cos(-self.parentPart:getRotation() / 180 * math.pi)
-    	pry = radius * math.sin(-self.parentPart:getRotation() / 180 * math.pi)
-    	self:setPosition(ppx+prx, ppy+pry)
+    	self:setPosition(self.parentPart:getEndPosition())
     end
 
     -- 修正缩放
