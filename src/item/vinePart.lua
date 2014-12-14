@@ -10,6 +10,14 @@ VinePart = class("cc.Node",
         return node
 	end)
 
+function VinePart:getPartSize()
+	if self.stick then
+    	return self.stick:getContentSize()
+    end
+
+    return cc.size(0, 0)
+end
+
 function VinePart:initParam(param)
 	self.manager    = param.manager  -- 管理者，vine对象或layer
 	self.parentPart = param.parent   -- 父节点，通常用于坐标修正
@@ -40,14 +48,22 @@ function VinePart:update(dTime)
 		return false
 	end
 
-    -- 修正颜色
-    local colorChannel = 255 - 155 * (self.liveTime / self.lifeSpan)
-    self.stick:setColor(cc.c3b(colorChannel, colorChannel, colorChannel))
+    -- 修正坐标
+    if self.parentPart then
+    	local ppx, ppy = self.parentPart:getPosition()
+    	local prx = (self.outPointOfTangency.x - self.inPointOfTangency.x) * self.parentPart:getPartSize().width * self.parentPart:getScaleX()
+    	local pry = (self.outPointOfTangency.y - self.inPointOfTangency.y) * self.parentPart:getPartSize().height * self.parentPart:getScaleY()
+    	self:setPosition(ppx+prx, ppy+pry)
+    end
 
     -- 修正缩放
     if self.liveTime < 1.5 then
     	self.stick:setScale(self.liveTime / 1.5, self.liveTime / 1.5)
     end 
+
+    -- 修正颜色
+    local colorChannel = 255 - 155 * (self.liveTime / self.lifeSpan)
+    self.stick:setColor(cc.c3b(colorChannel, colorChannel, colorChannel))
 
     return true
 end

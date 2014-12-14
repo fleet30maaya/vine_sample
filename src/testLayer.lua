@@ -1,4 +1,4 @@
-require "src/item/vinePartSprite"
+require "src/item/basicVine"
 
 TestLayer = class("cc.Layer",
 	function()
@@ -25,6 +25,12 @@ function TestLayer:initSprite()
 	backSprite:setColor(cc.c3b(200, 200, 200))
 	self:addChild(backSprite)
 
+    self.vine = BasicVine:new()
+    self.vine:initWithParam({srcPos = cc.p(size.width/2, size.height/2),
+    	                     tgtPos = cc.p(0, 0),
+    	                     bornInterval = 1.0})
+    self.vine:setCanvas(self)
+    self.vine:start()
 end
 
 function TestLayer:initTouch()
@@ -33,11 +39,7 @@ function TestLayer:initTouch()
     listener:setSwallowTouches(true)
 
     local function onTouchBegan(touch, event)
-    	local part = VinePart:new({manager = self, position = touch:getLocation()})
-    	self:addChild(part)
-
-    	table.insert(self.partList, part)
-
+        self.vine:setTargetPosition(touch:getLocation())
         return true
     end
 
@@ -64,23 +66,8 @@ end
 
 function TestLayer:scheduleUpdate()
     function doUpdate(dTime)
-    	for i,v in ipairs(self.partList) do
-    		if not v:update(dTime) then
-    			table.remove(self.partList, i)
-	    		v:removeFromParent()
-    	    end
-        end
+    	self.vine:update(dTime)
     end
     self:scheduleUpdateWithPriorityLua(doUpdate, 0)
-end
-
-function TestLayer:onPartFinish(part)
-	for i,v in ipairs(self.partList) do
-		if v == part then
-			table.remove(self.partList, i)
-			v:removeFromParent()
-			break
-		end
-	end
 end
 
