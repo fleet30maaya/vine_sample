@@ -18,28 +18,41 @@ function VinePart:getPartSize()
     return cc.size(0, 0)
 end
 
+function VinePart:getEndPosition()
+	local ppx, ppy = self:getPosition()
+    local prx = (self.outPointOfTangency.x - self.inPointOfTangency.x) * self:getPartSize().width * self:getScaleX()
+    local pry = (self.outPointOfTangency.y - self.inPointOfTangency.y) * self:getPartSize().height * self:getScaleY()
+    local radius = math.sqrt(prx*prx + pry*pry)
+    prx = radius * math.cos(-self:getRotation() / 180 * math.pi)
+    pry = radius * math.sin(-self:getRotation() / 180 * math.pi)
+
+    return cc.p(ppx+prx, ppy+pry)
+end
+
 function VinePart:initParam(param)
 	self.manager    = param.manager  -- 管理者，vine对象或layer
 	self.parentPart = param.parent   -- 父节点，通常用于坐标修正
 	self.childPart  = nil            -- 子结点，通常只用于引用
+	self.rotateAnlge = param.rotation
 
     if param.position then
     	self:setPosition(param.position)
     end
 
-	self.lifeSpan = 10.0
+	self.lifeSpan = 1000.0
 	self.liveTime = 0.0
 
-	self.inPointOfTangency  = cc.p(5/10, 5/55)   -- 随sprite而变
-	self.outPointOfTangency = cc.p(5/10, 50/55)  -- 随sprite而变
+	self.inPointOfTangency  = cc.p(5/55, 5/10)   -- 随sprite而变
+	self.outPointOfTangency = cc.p(50/55, 5/10)  -- 随sprite而变
 end
 
 function VinePart:initSprite()
-    self.stick = cc.Sprite:create("res/vine_part_0.png")
+    self.stick = cc.Sprite:create("res/vine_part_1.png")
 	self.stick:setAnchorPoint(self.inPointOfTangency)
 	self:addChild(self.stick)
 
-	self.stick:setScale(0.0, 0.0)
+	self:setScale(0.0, 0.0)
+	self:setRotation(self.rotateAnlge)
 end
 
 function VinePart:update(dTime)
@@ -50,15 +63,12 @@ function VinePart:update(dTime)
 
     -- 修正坐标
     if self.parentPart then
-    	local ppx, ppy = self.parentPart:getPosition()
-    	local prx = (self.outPointOfTangency.x - self.inPointOfTangency.x) * self.parentPart:getPartSize().width * self.parentPart:getScaleX()
-    	local pry = (self.outPointOfTangency.y - self.inPointOfTangency.y) * self.parentPart:getPartSize().height * self.parentPart:getScaleY()
-    	self:setPosition(ppx+prx, ppy+pry)
+    	self:setPosition(self.parentPart:getEndPosition())
     end
 
     -- 修正缩放
-    if self.liveTime < 1.5 then
-    	self.stick:setScale(self.liveTime / 1.5, self.liveTime / 1.5)
+    if self.liveTime < 5 then
+    	self:setScale(self.liveTime / 5, self.liveTime / 5)
     end 
 
     -- 修正颜色
