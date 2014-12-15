@@ -29,7 +29,7 @@ function TestLayer:initSprite()
     self.vine:initWithParam({srcPos = cc.p(size.width/2, size.height/2),
     	                     tgtPos = cc.p(0, 0),
     	                     bornInterval = 1.0,
-    	                     angleOffset = 30})
+    	                     angleOffset = 60})
     self.vine:setCanvas(self)
     self.vine:start()
 end

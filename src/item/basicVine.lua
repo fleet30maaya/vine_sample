@@ -15,7 +15,7 @@ function BasicVine:initWithParam(param)
     self.sourcePosition = param.srcPos
 	self.targetPosition = param.tgtPos        -- 目标坐标
 	self.bornInverval   = param.bornInterval  -- 生出下一个part的间隔
-    self.maxAngleOffset = param.angleOffset   -- 两段间的最大角度差
+    self.maxAngleOffset = param.angleOffset   -- 两段间的最大角度差，决定了藤蔓的“硬度”
 end
 
 function BasicVine:setCanvas(canvas)
@@ -71,9 +71,8 @@ function BasicVine:bornNewOne()
     local tgtX,  tgtY  = self.targetPosition.x, self.targetPosition.y
     if (lastX-tgtX)*(lastX-tgtX) + (lastY-tgtY)*(lastY-tgtY) < 20*20 then
         -- 如果距离目标点太近，就随便指个方向
-        newAngle = lastaAngle + math.random(-self.maxAngleOffset, self.maxAngleOffset)
+        newAngle = lastAngle + math.random(-self.maxAngleOffset, self.maxAngleOffset)
     else
-        -- 看最近一个part的角度到目的角度间的较小角度，再用vine的max角度限制一下
         -- 首先，计算一下到目标点的角度吧
         local angleToTgt = 90
         if lastX == tgtX then
@@ -91,6 +90,34 @@ function BasicVine:bornNewOne()
         end
         newAngle = -angleToTgt/math.pi * 180
     end
+    -- 然后，按照最大转弯角度限制一下
+    while newAngle > 180 do newAngle = newAngle - 360 end
+    while newAngle < -180 do newAngle = newAngle + 360 end
+    while lastAngle > 180 do lastAngle = lastAngle - 360 end
+    while lastAngle < -180 do lastAngle = lastAngle + 360 end
+    --cclog("last: " .. lastAngle .. ", new: " .. newAngle)
+    
+    -- 可能的角度有两个，要都考虑进去
+    local minAngle = 0
+    local angle1 = newAngle - lastAngle
+    local angle2 = 360 - math.abs(angle1)
+    if angle1 >= 0 and angle2 > 0 then
+        angle2 = -angle2
+    elseif angle1 < 0 and angle2 < 0 then
+        angle2 = -angle2
+    end
+    if math.abs(angle1) >= math.abs(angle2) then
+        minAngle = angle2
+    else
+        minAngle = angle1
+    end
+    -- cclog("min: " .. minAngle)
+    if minAngle > self.maxAngleOffset then
+        newAngle = lastAngle + self.maxAngleOffset
+    elseif minAngle < -self.maxAngleOffset then
+        newAngle = lastAngle - self.maxAngleOffset
+    end
+    -- cclog("final new: " .. newAngle)
 
     -- create new part
     local part = VinePart:new({manager = self,
