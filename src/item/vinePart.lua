@@ -47,7 +47,7 @@ function VinePart:initParam(param)
 end
 
 function VinePart:initSprite()
-    self.stick = cc.Sprite:create("res/vine_part_0.png")
+    self.stick = cc.Sprite:create("res/vine_part_1.png")
 	self.stick:setAnchorPoint(self.inPointOfTangency)
 	self:addChild(self.stick)
 

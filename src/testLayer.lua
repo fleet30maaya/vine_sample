@@ -25,11 +25,15 @@ function TestLayer:initSprite()
 	backSprite:setColor(cc.c3b(200, 200, 200))
 	self:addChild(backSprite)
 
+	self.targetSprite = cc.Sprite:create("res/target.png")
+	self.targetSprite:setPosition(0, 0)
+	self:addChild(self.targetSprite, 1)
+
     self.vine = BasicVine:new()
     self.vine:initWithParam({srcPos = cc.p(size.width/2, size.height/2),
     	                     tgtPos = cc.p(0, 0),
     	                     bornInterval = 1.0,
-    	                     angleOffset = 60})
+    	                     angleOffset = 45})
     self.vine:setCanvas(self)
     self.vine:start()
 end
@@ -41,10 +45,13 @@ function TestLayer:initTouch()
 
     local function onTouchBegan(touch, event)
         self.vine:setTargetPosition(touch:getLocation())
+        self.targetSprite:setPosition(touch:getLocation())
         return true
     end
 
     local function onTouchMoved(touch, event)
+        self.vine:setTargetPosition(touch:getLocation())
+        self.targetSprite:setPosition(touch:getLocation())
         return
     end
 
