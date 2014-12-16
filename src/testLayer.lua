@@ -30,13 +30,13 @@ function TestLayer:initSprite()
 	self:addChild(self.targetSprite, 1)
 
     self.vines = {}
-    for i = 1, 6 do
+    for i = 1, 20 do
         local vine = BasicVine:new()
         vine:initWithParam({srcPos = cc.p(size.width/2 + math.random(-50, 50), size.height/2 + math.random(-50, 50)),
-                             tgtPos = cc.p(size.width/2, size.height/2),
-                             bornInterval = 1.0,
-                             oriAngle = math.random(0, 100) / 100 * 360,
-                             angleOffset = 45})
+                            tgtPos = cc.p(size.width/2, size.height/2),
+                            bornInterval = 1.0,
+                            oriAngle = math.random(0, 100) / 100 * 360,
+                            angleOffset = 45})
         vine:setCanvas(self)
         vine:start()
         table.insert(self.vines, vine)

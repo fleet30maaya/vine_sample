@@ -39,7 +39,7 @@ function VinePart:initParam(param)
     	self:setPosition(param.position)
     end
 
-	self.lifeSpan = 1000.0
+	self.lifeSpan = 20.0
 	self.liveTime = 0.0
 
 	self.inPointOfTangency  = cc.p(5/55, 5/10)   -- 随sprite而变
