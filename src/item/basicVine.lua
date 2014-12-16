@@ -121,7 +121,7 @@ function BasicVine:bornNewOne()
     end
 
     -- 随机偏折
-    newAngle = newAngle + math.random(-50, 50)
+    newAngle = newAngle + math.random(-VINE_PART_DEFLECTION_ANGLE, VINE_PART_DEFLECTION_ANGLE)
 
     -- create new part
     local part = VinePart:new({manager = self,
