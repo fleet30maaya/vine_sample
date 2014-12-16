@@ -9,6 +9,8 @@ function BasicVine:ctor()
 	self.partList = {}
 
 	self.bornTimeCount = 0.0
+    self.random = Random:new()
+    self.random:setSeed(os.time() + math.random(1, 1000))
 end
 
 function BasicVine:initWithParam(param)
@@ -16,6 +18,7 @@ function BasicVine:initWithParam(param)
 	self.targetPosition = param.tgtPos        -- 目标坐标
 	self.bornInverval   = param.bornInterval  -- 生出下一个part的间隔
     self.maxAngleOffset = param.angleOffset   -- 两段间的最大角度差，决定了藤蔓的“硬度”
+    self.originalAngle  = param.oriAngle      -- 最初的朝向角度
 end
 
 function BasicVine:setCanvas(canvas)
@@ -31,6 +34,7 @@ function BasicVine:start()
     local part = VinePart:new({manager = self,
                                position = self.sourcePosition,
                                rotation = 0})
+    part:setRotation(self.originalAngle)
     self.canvas:addChild(part)
 
     table.insert(self.partList, part)
@@ -71,7 +75,7 @@ function BasicVine:bornNewOne()
     local tgtX,  tgtY  = self.targetPosition.x, self.targetPosition.y
     if (lastX-tgtX)*(lastX-tgtX) + (lastY-tgtY)*(lastY-tgtY) < 20*20 then
         -- 如果距离目标点太近，就随便指个方向
-        newAngle = lastAngle + math.random(-self.maxAngleOffset, self.maxAngleOffset)
+        newAngle = lastAngle + (-self.maxAngleOffset + self.random:nextFloat0_1() * self.maxAngleOffset*2)
     else
         -- 首先，计算一下到目标点的角度吧
         local angleToTgt = 90
@@ -95,7 +99,6 @@ function BasicVine:bornNewOne()
     while newAngle < -180 do newAngle = newAngle + 360 end
     while lastAngle > 180 do lastAngle = lastAngle - 360 end
     while lastAngle < -180 do lastAngle = lastAngle + 360 end
-    --cclog("last: " .. lastAngle .. ", new: " .. newAngle)
     
     -- 可能的角度有两个，要都考虑进去
     local minAngle = 0
@@ -111,13 +114,16 @@ function BasicVine:bornNewOne()
     else
         minAngle = angle1
     end
-    -- cclog("min: " .. minAngle)
+
+    -- 角度限制
     if minAngle > self.maxAngleOffset then
         newAngle = lastAngle + self.maxAngleOffset
     elseif minAngle < -self.maxAngleOffset then
         newAngle = lastAngle - self.maxAngleOffset
     end
-    -- cclog("final new: " .. newAngle)
+
+    -- 随机偏折
+    newAngle = newAngle + (-VINE_PART_DEFLECTION_ANGLE + self.random:nextFloat0_1() * VINE_PART_DEFLECTION_ANGLE * 2)
 
     -- create new part
     local part = VinePart:new({manager = self,
