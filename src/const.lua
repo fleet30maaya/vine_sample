@@ -18,4 +18,4 @@ VINE_PART_LIFESPAN = 20  -- 生命周期
 VINE_PART_GROWUP_TIME = 5  -- 生长期的时间
 VINE_PART_SHRINK_TIME = 5  -- 萎缩期的时间
 VINE_PART_SHRINK_SCALE = 0.7  -- 萎缩期到最终的scale
-VINE_PART_DEFLECTION_ANGLE = 35  -- 强制偏折角度范围
+VINE_PART_DEFLECTION_ANGLE = 50  -- 强制偏折角度范围

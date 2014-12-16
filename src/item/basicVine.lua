@@ -9,6 +9,8 @@ function BasicVine:ctor()
 	self.partList = {}
 
 	self.bornTimeCount = 0.0
+    self.random = Random:new()
+    self.random:setSeed(os.time() + math.random(1, 1000))
 end
 
 function BasicVine:initWithParam(param)
@@ -73,7 +75,7 @@ function BasicVine:bornNewOne()
     local tgtX,  tgtY  = self.targetPosition.x, self.targetPosition.y
     if (lastX-tgtX)*(lastX-tgtX) + (lastY-tgtY)*(lastY-tgtY) < 20*20 then
         -- 如果距离目标点太近，就随便指个方向
-        newAngle = lastAngle + math.random(-self.maxAngleOffset, self.maxAngleOffset)
+        newAngle = lastAngle + (-self.maxAngleOffset + self.random:nextFloat0_1() * self.maxAngleOffset*2)
     else
         -- 首先，计算一下到目标点的角度吧
         local angleToTgt = 90
@@ -121,7 +123,7 @@ function BasicVine:bornNewOne()
     end
 
     -- 随机偏折
-    newAngle = newAngle + math.random(-VINE_PART_DEFLECTION_ANGLE, VINE_PART_DEFLECTION_ANGLE)
+    newAngle = newAngle + (-VINE_PART_DEFLECTION_ANGLE + self.random:nextFloat0_1() * VINE_PART_DEFLECTION_ANGLE * 2)
 
     -- create new part
     local part = VinePart:new({manager = self,

@@ -6,6 +6,7 @@ cc.FileUtils:getInstance():addSearchPath("res")
 require "cocos.init"
 require "const.lua"
 require "utils/utility"
+require "utils/random"
 
 -- cclog
 cclog = function(...)
