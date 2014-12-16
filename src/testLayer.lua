@@ -26,16 +26,21 @@ function TestLayer:initSprite()
 	self:addChild(backSprite)
 
 	self.targetSprite = cc.Sprite:create("res/target.png")
-	self.targetSprite:setPosition(0, 0)
+	self.targetSprite:setPosition(size.width/2, size.height/2)
 	self:addChild(self.targetSprite, 1)
 
-    self.vine = BasicVine:new()
-    self.vine:initWithParam({srcPos = cc.p(size.width/2, size.height/2),
-    	                     tgtPos = cc.p(0, 0),
-    	                     bornInterval = 1.0,
-    	                     angleOffset = 45})
-    self.vine:setCanvas(self)
-    self.vine:start()
+    self.vines = {}
+    for i = 1, 6 do
+        local vine = BasicVine:new()
+        vine:initWithParam({srcPos = cc.p(size.width/2 + math.random(-50, 50), size.height/2 + math.random(-50, 50)),
+                             tgtPos = cc.p(size.width/2, size.height/2),
+                             bornInterval = 1.0,
+                             oriAngle = math.random(0, 100) / 100 * 360,
+                             angleOffset = 45})
+        vine:setCanvas(self)
+        vine:start()
+        table.insert(self.vines, vine)
+    end
 end
 
 function TestLayer:initTouch()
@@ -44,14 +49,20 @@ function TestLayer:initTouch()
     listener:setSwallowTouches(true)
 
     local function onTouchBegan(touch, event)
-        self.vine:setTargetPosition(touch:getLocation())
         self.targetSprite:setPosition(touch:getLocation())
+        for k, v in pairs(self.vines) do
+            v:setTargetPosition(cc.p(touch:getLocation().x + math.random(-100, 100),
+                                     touch:getLocation().y + math.random(-100, 100)))
+        end
         return true
     end
 
     local function onTouchMoved(touch, event)
-        self.vine:setTargetPosition(touch:getLocation())
         self.targetSprite:setPosition(touch:getLocation())
+        for k, v in pairs(self.vines) do
+            v:setTargetPosition(cc.p(touch:getLocation().x + math.random(-100, 100),
+                                     touch:getLocation().y + math.random(-100, 100)))
+        end
         return
     end
 
@@ -74,7 +85,9 @@ end
 
 function TestLayer:scheduleUpdate()
     function doUpdate(dTime)
-    	self.vine:update(dTime)
+        for k, v in pairs(self.vines) do
+            v:update(dTime * VINE_SPEED_FACTOR)
+        end
     end
     self:scheduleUpdateWithPriorityLua(doUpdate, 0)
 end
