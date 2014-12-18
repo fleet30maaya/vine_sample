@@ -52,6 +52,11 @@ function VinePart:initParam(param)
 
 	self.inPointOfTangency  = vines[self.vineIndex].inPoint   -- 随sprite而变
 	self.outPointOfTangency = vines[self.vineIndex].outPoint  -- 随sprite而变
+    self.inAngle = vines[self.vineIndex].inAngle
+    self.outAngle = vines[self.vineIndex].outAngle
+
+    -- 自己的的inAngle提供了部分角度，要减去
+    self.rotateAnlge = self.rotateAnlge - self.inAngle
 end
 
 function VinePart:initSprite()

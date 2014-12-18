@@ -125,6 +125,9 @@ function BasicVine:bornNewOne()
     -- 随机偏折
     newAngle = newAngle + (-VINE_PART_DEFLECTION_ANGLE + self.random:nextFloat0_1() * VINE_PART_DEFLECTION_ANGLE * 2)
 
+    -- 当前的outAngle已经提供了部分角度，要加上
+    newAngle = newAngle + lastPart.outAngle
+
     -- create new part
     local part = VinePart:new({manager = self,
                                position = self.sourcePosition,
