@@ -36,7 +36,7 @@ function TestLayer:initSprite()
                             tgtPos = cc.p(size.width/2, size.height/2),
                             bornInterval = VINE_PART_INTERVAL,
                             oriAngle = math.random(0, 100) / 100 * 360,
-                            angleOffset = 45})
+                            angleOffset = VINE_PART_OFFSET_ANGLE})
         vine:setCanvas(self)
         vine:start()
         table.insert(self.vines, vine)

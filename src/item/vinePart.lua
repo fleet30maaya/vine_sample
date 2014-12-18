@@ -48,12 +48,14 @@ function VinePart:initParam(param)
 	self.lifeSpan = VINE_PART_LIFESPAN
 	self.liveTime = 0.0
 
-	self.inPointOfTangency  = cc.p(5/55, 5/10)   -- 随sprite而变
-	self.outPointOfTangency = cc.p(50/55, 5/10)  -- 随sprite而变
+    self.vineIndex = math.random(3, 6)
+
+	self.inPointOfTangency  = vines[self.vineIndex].inPoint   -- 随sprite而变
+	self.outPointOfTangency = vines[self.vineIndex].outPoint  -- 随sprite而变
 end
 
 function VinePart:initSprite()
-    self.stick = cc.Sprite:create("res/vine_part_1.png")
+    self.stick = cc.Sprite:create(vines[self.vineIndex].file)
 	self.stick:setAnchorPoint(self.inPointOfTangency)
 	self:addChild(self.stick)
 
